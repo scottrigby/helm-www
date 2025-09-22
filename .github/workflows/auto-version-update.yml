@@ -1,0 +1,65 @@
+name: Update Helm Version
+
+on:
+  repository_dispatch:
+    types: [helm-release]
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract version info
+        id: version
+        run: |
+          VERSION="${{ github.event.client_payload.version }}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "version_no_v=${VERSION#v}" >> $GITHUB_OUTPUT
+
+          NEXT_MINOR=$(echo "$VERSION" | awk -F. '{print $1"."($2+1)".0"}')
+          echo "next_version=${NEXT_MINOR}" >> $GITHUB_OUTPUT
+
+      - name: Create update branch
+        run: |
+          git checkout -b update-helm-${{ steps.version.outputs.version_no_v }}
+
+      - name: Update config.toml
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NEXT_VERSION="${{ steps.version.outputs.next_version }}"
+
+          # Update current version and next planned version
+          sed -i "s/helm = \"[^\"]*\"/helm = \"$VERSION\"/" config.toml
+          sed -i "s/nextversion = \"[^\"]*\"/nextversion = \"$NEXT_VERSION\"/" config.toml
+
+      - name: Commit and push
+        run: |
+          git add config.toml
+          git commit -s -m "Update Helm version to ${{ steps.version.outputs.version }}"
+          git push origin update-helm-${{ steps.version.outputs.version_no_v }}
+
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --title "Update website for Helm ${{ steps.version.outputs.version }}" \
+            --body "Updates website configuration for Helm release ${{ steps.version.outputs.version }}
+
+          Changes:
+          - Update current Helm version to ${{ steps.version.outputs.version }}
+          - Set next planned version to ${{ steps.version.outputs.next_version }}
+
+          Release: ${{ github.event.client_payload.release_url }}" \
+            --base main \
+            --head update-helm-${{ steps.version.outputs.version_no_v }}

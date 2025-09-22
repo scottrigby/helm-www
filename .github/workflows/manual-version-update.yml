@@ -1,0 +1,25 @@
+name: Manual Update Helm Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Helm version to update docs for (e.g., v3.20.0)'
+        required: true
+        type: string
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger helm version update workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: helm-release
+          client-payload: |
+            {
+              "version": "${{ inputs.version }}",
+              "release_url": "https://github.com/helm/helm/releases/tag/${{ inputs.version }}"
+            }
