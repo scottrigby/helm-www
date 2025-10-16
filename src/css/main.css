@@ -4,8 +4,48 @@
  * work well for content-centric websites.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+/* TODO import the materialdesign react component instead */
+/* https://pictogrammers.com/docs/library/mdi/getting-started/react/ */
 @import url("https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css");
+
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/fonts/publicsans-regular-webfont.woff2') format('woff2'),
+       url('/fonts/publicsans-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/fonts/publicsans-medium-webfont.woff2') format('woff2'),
+       url('/fonts/publicsans-medium-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/spacemono-regular-webfont.woff2') format('woff2'),
+       url('/fonts/spacemono-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/spacemono-bold-webfont.woff2') format('woff2'),
+       url('/fonts/spacemono-bold-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Material Design Icons';
+  src:
+    url('/fonts/materialdesignicons-webfont.woff2') format('woff2'),
+    url('/fonts/materialdesignicons-webfont.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
 
 body {
   /* needed for border to fit content instead of initial viewport */

@@ -68,6 +68,7 @@ const config = {
           // "lastVersion" means the latest release
           // when we cut over to helm 4.0.0, we change lastVersion from "3" to "current"
           // where "current" means the /docs folder
+          // and then add banner: "none" to version 3 below
           lastVersion: "3",
           versions: {
             // v4 is "current" (does not necessarily mean latest, see above)
@@ -130,18 +131,13 @@ const config = {
           src: "img/helm.svg",
         },
         items: [
-          {
-            type: "docSidebar",
-            sidebarId: "tutorialSidebar",
-            position: "left",
-            label: "Docs",
-          },
+          { to: "docs", label: "Docs", position: "left" },
           {
             href: "https://artifacthub.io/",
             label: "Charts",
             position: "left",
           },
-          { to: "/blog", label: "Blog", position: "left" },
+          { to: "blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/helm/community/",
             label: "Community",
