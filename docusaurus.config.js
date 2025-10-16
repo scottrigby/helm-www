@@ -108,9 +108,9 @@ const config = {
         id: "helm4_prerelease",
         content:
           '📢 Helm 4 beta 1 is out! See the <a href="/docs/next/category/helm-4">pre-release docs</a> for details!',
-        backgroundColor: "#2e8555",
+        backgroundColor: "#0f1689",
         textColor: "#ffffff",
-        isCloseable: false,
+        isCloseable: true,
       },
       // Replace with your project's social card
       image: "img/helm-social-card.png",
