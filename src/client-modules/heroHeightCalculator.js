@@ -114,54 +114,31 @@ function initializeHeroHeightCalculation() {
     return false;
   }
 
-  // Initialize with multiple strategies to catch hydration
+  // Initialize with a delay to avoid hydration conflicts
   function initializeHero() {
-    calculateHeroHeight();
+    // Wait a bit for React hydration to complete
+    setTimeout(() => {
+      calculateHeroHeight();
 
-    // Keep trying until styles are actually applied
-    let attempts = 0;
-    const checkInterval = setInterval(() => {
-      attempts++;
-      if (ensureHeroStylesApplied() || attempts > 20) {
-        clearInterval(checkInterval);
-      } else {
-        calculateHeroHeight();
-      }
-    }, 100);
+      // Keep trying until styles are actually applied (but less aggressively)
+      let attempts = 0;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        if (ensureHeroStylesApplied() || attempts > 10) {
+          clearInterval(checkInterval);
+        } else {
+          calculateHeroHeight();
+        }
+      }, 200); // Slower interval to reduce conflicts
+    }, 500); // Initial delay to let React hydrate
   }
 
   // Initialize on page load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeHero);
   } else {
+    // In production, delay even if DOM is ready to avoid hydration conflicts
     initializeHero();
-  }
-
-  // Also listen for React hydration completion
-  if (typeof window !== 'undefined') {
-    // React 18+ hydration
-    const reactRoot = document.getElementById('__docusaurus');
-    if (reactRoot) {
-      // Use MutationObserver to detect when React modifies the DOM
-      const observer = new MutationObserver((mutations) => {
-        if (window.location.pathname === '/' && !stylesApplied) {
-          calculateHeroHeight();
-          if (ensureHeroStylesApplied()) {
-            observer.disconnect();
-          }
-        }
-      });
-
-      observer.observe(reactRoot, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['class', 'style']
-      });
-
-      // Disconnect after 5 seconds to prevent memory leaks
-      setTimeout(() => observer.disconnect(), 5000);
-    }
   }
 
   // Force scroll to top AFTER browser's scroll restoration
